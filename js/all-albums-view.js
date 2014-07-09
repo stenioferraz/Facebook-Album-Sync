@@ -5,29 +5,29 @@
 
 (function(){
 
-	//facbookAlbumsSync object is localized from wordpress plugin php 
+	//fbas object is localized from wordpress plugin php 
 	// declare application namespace
 	var fbas = fbas || {};
 
 	var ALbumsCount = 1;
 	var rowItemscnt = 1;
-	var excludeAlbums = facbookAlbumsSync.excludeAlbums;
+	var excludeAlbums = fbas.excludeAlbums;
 
 	for (albumid in excludeAlbums){
 		excludeAlbums[albumid] = excludeAlbums[albumid].trim();
 	}
 
-	var fbpagename = facbookAlbumsSync.facebookPageName;
+	var fbpagename = fbas.facebookPageName;
 
-	var prettypermalinkon = facbookAlbumsSync.prettyPermalinks ; 
+	var prettypermalinkon = fbas.prettyPermalinks ; 
 	var curhtml ="";
 	var loadingImage = "<div id='fbloader'></div>" ;
-	addhtml(loadingImage);
 
+	var albumsGraphUrl = "https://graph.facebook.com/"+fbpagename+"/albums/" ; 
+	
+	addhtml( loadingImage );
 
-	getPageAlbumData("https://graph.facebook.com/"+fbpagename+"/albums/");
-
-	// end main execution here :) 
+	getAlbumsRawDataPage( albumsGraphUrl );
 
 }() );
 
@@ -39,15 +39,22 @@ function addhtml(html){
 	document.getElementById('fbalbumsync').innerHTML += html;
 }
 
-function getPageAlbumData(fbGraphUrl)
+function getpages(data){
+
+			getAlbums(data,0);
+}
+
+function processRawAlbumsData(data){
+
+}
+
+function getAlbumsRawDataPage(fbGraphUrl)
 {
 	jQuery.ajax({
 		dataType: 'jsonp',
 		url: fbGraphUrl,
 		type: 'GET',
-		success: function getpages(data){
-			getAlbums(data,0);
-		},
+		success: getpages,
 		error: function( data ) {
 			console.log("Error: Facebook\'s Graph API might be down."+data);
 		}
@@ -60,11 +67,10 @@ function getPageAlbumData(fbGraphUrl)
 // structure? like just plug it in http://facebook.com/photo/".id."/
 function getAlbums(data, i)	{
 
-//skip if album is excluded
-arrayIndex = jQuery.inArray( data.data[i].id  , excludeAlbums );
+// check if the album should be excluded
+if( _.indexOf( excludeAlbums , data.data[i].id  ) !== -1 ){ 
 
-if(arrayIndex !== -1 ){ // if the next page doesn't exist
-
+	// if the album is excluded increase the index and move on to the next album
 	if (i < data.data.length - 1){
 		i++;
 		getAlbums(data, i );

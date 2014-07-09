@@ -13,7 +13,6 @@ Author URI: http://dwainm.wordpress.com
 *  Load the needed scripts
 */
 
-
 function my_scripts_method() {
 
 	global $post;
@@ -114,9 +113,9 @@ function generate_localized_data($atts){
 
 	}
 
-	// localize data based ont he page the users viewing
+	// localize the data grouped under the fbas object
 
-	wp_localize_script( 'facebook_albums_sync' , 'facbookAlbumsSync', $data);
+	wp_localize_script( 'facebook_albums_sync' , 'fbas', $data);
 
 }
 
