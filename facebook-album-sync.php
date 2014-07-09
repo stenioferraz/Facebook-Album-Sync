@@ -39,9 +39,6 @@ function my_scripts_method() {
 			wp_enqueue_style( '1140_ie',$plugin_url.'css/ie.css' );
 			wp_enqueue_style( 'fbalbumsync_mainstyle',$plugin_url.'css/fbasstyles.css' );
 			wp_enqueue_script('fbalbumsync_media_query_js',$plugin_url.'js/css3-mediaqueries.js' );
-
-
-
 	
        }   
 	}
