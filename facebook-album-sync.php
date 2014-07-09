@@ -29,7 +29,7 @@ function my_scripts_method() {
 			$plugin_url = plugin_dir_url( __FILE__ );
 
 			//include javascript files
-    		wp_enqueue_script( 'jquery' );
+			wp_enqueue_script('backbone', array('underscore','jquery') );
 			wp_enqueue_script( 'lightbox', $plugin_url.'js/lightbox.js', array('jquery'), '0.4', true );
 			wp_enqueue_script( 'smooth_scroll',$plugin_url.'js/jquery.smooth-scroll.min.js', array('jquery'), '0.4', true );
 			wp_enqueue_script( 'facebook_albums_sync', $plugin_url.'js/facebook-album-sync.js', array('jquery'), '0.4', true  );
@@ -59,7 +59,12 @@ function enque_view_scripts(){
 
 	if( all_albums_view() ){
 
+		// include page models before the main login executes
+		wp_enqueue_script('fbas_models_album',$plugin_url.'js/models/album.js' );
+
+		// main execution script:
 		wp_enqueue_script('fbas_all_albums_view',$plugin_url.'js/all-albums-view.js' );
+
 	
 	}else{
 		wp_enqueue_script('fbas_single_album_view',$plugin_url.'js/single-album-view.js' );
