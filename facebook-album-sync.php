@@ -260,3 +260,72 @@ function is_pretty_permalinks_on ($return_as_string=false){
 		return $result;
 
 }
+
+
+/**
+* Hook into the qunit testing plugin
+*/
+
+function load_qunit_testing_scripts(){
+
+	//load depedancies for tests
+	wp_enqueue_script('backbone', array( 'jquery', 'underscore' ) );
+	wp_enqueue_script('underscore');
+	wp_enqueue_script('backbone');
+
+	// load plugin js 
+	$plugin_js = plugin_dir_url( __FILE__ ) . 'js/';
+
+	$plugin_js_scripts = array(
+					'models/album',
+					'collections/albums',
+					'views/AllAlbums',
+					'app',
+	); 
+
+	foreach ($plugin_js_scripts as $script) {		
+		$script_location = $plugin_js . $script . '.js';
+		wp_enqueue_script( $script, $script_location , array('backbone') );
+	}
+
+	wp_enqueue_script( $script, $script_location , array('backbone') );
+	
+	//load test modules
+	$plugin_js_test_modules = plugin_dir_url( __FILE__ ) . 'tests/js/modules/';
+
+	$test_modules = array(
+			'albumsCollection',
+			'allAlbumsView',
+	);
+	
+	foreach ($test_modules as $script) {
+		
+		$script_location = $plugin_js_test_modules . $script . '.js';
+		wp_enqueue_script( $script, $script_location , array('backbone') );
+	}
+	
+}
+
+add_action('qunit_add_scripts'  , 'load_qunit_testing_scripts');
+
+/**
+*  Hooks used to to return test json files
+*/
+
+function json_test_data(){
+	$plugin_js_test_data_path = plugin_dir_path( __FILE__ ) . 'tests/js/data/';
+
+	if( isset( $_REQUEST['fbastestdata'] ) && !empty( $_REQUEST['fbastestdata'] ) ) {
+
+		$requested_file_name = $_REQUEST['fbastestdata'];
+		$jsonFile = $plugin_js_test_data_path .$requested_file_name ;
+		$fileStream = fopen( $jsonFile, 'r' );
+		$jsonData = fread($fileStream, filesize( $jsonFile ) );
+		header("Access-Control-Allow-Origin: all"); 
+		header('Content-type: application/jsonp');
+		echo   $jsonData    ;
+		die;
+	}
+}
+
+add_action('template_redirect', 'json_test_data' );
