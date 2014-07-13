@@ -1,8 +1,6 @@
 /**
 * View: show all albums grid where the shortcode was added
 */
-
-
 (function(){
 
 	//fbas object is localized from wordpress plugin php 
@@ -11,11 +9,6 @@
 
 	var ALbumsCount = 1;
 	var rowItemscnt = 1;
-	var excludeAlbums = fbas.excludeAlbums;
-
-	for (albumid in excludeAlbums){
-		excludeAlbums[albumid] = excludeAlbums[albumid].trim();
-	}
 
 	var fbpagename = fbas.facebookPageName;
 
@@ -83,11 +76,11 @@ if( _.indexOf( excludeAlbums , data.data[i].id  ) !== -1 ){
 		try{ // test if album has a cover photo
 				var coverPhotograph = 'https://graph.facebook.com/'+data.data[i].cover_photo;
 		
-			}catch(err){
+		}catch(err){
 				addhtml(curhtml);
 				curhtml ="";
 				console.log(err);
-			}
+		}
 			
 		jQuery.ajax({
 			dataType: 'jsonp',
